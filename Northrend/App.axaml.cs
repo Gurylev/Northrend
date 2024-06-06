@@ -44,9 +44,9 @@ namespace Northrend
 
             base.OnFrameworkInitializationCompleted();
 
-            ImportDataService importDataService = new ImportDataService();
-            importDataService.LoadIntegralVelocities();
-            importDataService.LoadNodes();
+            var importDataService = Services.GetRequiredService<ImportDataService>();
+            var map = importDataService.LoadIntegralVelocities(@"Data\IntegrVelocity.xlsx");
+            var nodes = importDataService.LoadNodes(@"Data\ГрафДанные.xlsx");
         }
 
         private void InitializeApplicationServices()
@@ -81,7 +81,14 @@ namespace Northrend
                     _ = services
                     .AddSingleton<IEventAggregator, EventAggregator>()
                     .AddSingleton<MainWindowViewModel>()
-                    .AddSingleton<MainWindow>();
+                    .AddSingleton<MainWindow>()
+                    .AddSingleton<ImportDataService>()
+                    
+                    
+                    
+                    
+                    ;
+                    
                 });               
         }
     }
