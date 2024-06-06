@@ -11,5 +11,7 @@ namespace Northrend.Alodi.Interfaces
         IEnumerable<INode> Collection { get; }
 
         void Add(INode node);
+
+        INode? GetNodeByName(string name);
     }
 }

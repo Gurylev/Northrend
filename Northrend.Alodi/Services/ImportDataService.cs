@@ -8,11 +8,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Northrend.Alodi.Services
 {
     public class ImportDataService
     {
+        INodes? nodesMap;
+
+
+
         public ImportDataService(IServiceProvider serviceProvider) 
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -50,7 +55,7 @@ namespace Northrend.Alodi.Services
 
                         var longitudeResult = decimal.TryParse(longitudeString, CultureInfo.CurrentCulture, out var longitude);
                         var latitudeResult = decimal.TryParse(latitudeString, CultureInfo.CurrentCulture, out var latitude);
-                        if(!longitudeResult && !latitudeResult)
+                        if(!longitudeResult || !latitudeResult)
                         {
                             //вызываем ошибку
                         }
@@ -83,7 +88,6 @@ namespace Northrend.Alodi.Services
             if (!existingFile.Exists)
                 return null;
 
-            INodes? nodesMap = null;
 
             using (ExcelPackage package = new(existingFile))
             {
@@ -105,6 +109,7 @@ namespace Northrend.Alodi.Services
                     var longitudeString = worksheetWithPoints.Cells[row, 2].Value?.ToString();
                     var latitudeString = worksheetWithPoints.Cells[row, 3].Value?.ToString();
                     var name = worksheetWithPoints.Cells[row, 4].Value?.ToString() ?? string.Empty;
+
 
 
 
@@ -139,7 +144,7 @@ namespace Northrend.Alodi.Services
                     var endPointResult = ushort.TryParse(endPointString, CultureInfo.CurrentCulture, out var endPoint);
                     var distanceResult = decimal.TryParse(distanceString, CultureInfo.CurrentCulture, out var distance);
                     var statusResult = Enum.TryParse<NodeStatus>(statusString, out var status);
-                    if (!idResult && !startPointResult && !endPointResult && !distanceResult && !statusResult)
+                    if (!idResult || !startPointResult || !endPointResult || !distanceResult || !statusResult)
                     {
                         //вызываем ошибку
                     }
@@ -179,6 +184,111 @@ namespace Northrend.Alodi.Services
 
             }
             return nodesMap;
+        }
+
+        public (IEnumerable<IRequest>? Requests, IEnumerable<IIcebreakerCard>? Icebreakers) LoadRequestsAndIcebreakers(string path)
+        {
+            if(nodesMap is null)
+                return (null, null);
+
+            FileInfo existingFile = new(path);
+            if (!existingFile.Exists)
+                return (null, null);
+
+            List<IRequest> requests = [];
+            List<IIcebreakerCard> icebreakerCards = [];
+
+            using (ExcelPackage package = new(existingFile))
+            {
+                if (!package.Workbook.Worksheets[0].Name.Equals("requests")
+                    && !package.Workbook.Worksheets[1].Name.Equals("icebreakers"))
+                {
+                    //вызываем диалоговое окно с ошибкой.
+                }
+
+                var worksheetWithRequests = package.Workbook.Worksheets[0];
+
+                //int colCount = package.Workbook.Worksheets[0].Dimension.End.Column;
+                int rowCount = worksheetWithRequests.Dimension.End.Row;
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    var nameString = worksheetWithRequests.Cells[row, 1].Value?.ToString();
+                    var iceClassString = worksheetWithRequests.Cells[row, 2].Value?.ToString()?.Replace(" ", "");
+                    var speedInKnotsString = worksheetWithRequests.Cells[row, 3].Value?.ToString();
+                    var nameStartPointNameString = worksheetWithRequests.Cells[row, 4].Value?.ToString() ?? string.Empty;
+                    var nameEndPointNameString = worksheetWithRequests.Cells[row, 5].Value?.ToString() ?? string.Empty;
+                    var dateAtPointString = worksheetWithRequests.Cells[row, 6].Value?.ToString() ?? string.Empty;
+
+                    var iceClassResult = Enum.TryParse<IceClass>(iceClassString, true, out var iceClass);
+                    var speedInKnotsResult = decimal.TryParse(speedInKnotsString, CultureInfo.CurrentCulture, out var speedInKnots);
+                    var startPoint = nodesMap.GetNodeByName(nameStartPointNameString);
+                    var endPoint = nodesMap.GetNodeByName(nameEndPointNameString);
+
+                    var datetimeConvertToDoubleResult = double.TryParse(dateAtPointString, CultureInfo.CurrentCulture, out var dateAtPointInDouble);
+                    DateTime dateAtPoint;
+                    if (datetimeConvertToDoubleResult)
+                        dateAtPoint = DateTime.FromOADate(dateAtPointInDouble);
+                    else
+                    {
+                        if (!DateTime.TryParse(dateAtPointString, CultureInfo.CurrentCulture, out dateAtPoint))
+                        {
+                            //вызываем ошибку
+                        }
+                    }
+
+                    if (!iceClassResult || !speedInKnotsResult || startPoint is null || endPoint is null || !datetimeConvertToDoubleResult)
+                    {
+                        string t = "";
+                        //вызываем ошибку
+                    }
+
+                    var request = Factory.CreateRequest(nameString, iceClass, speedInKnots, startPoint, endPoint, dateAtPoint);
+
+                    requests.Add(request);
+                }
+
+
+                var worksheetWithIcebreakers = package.Workbook.Worksheets[1];
+
+                rowCount = worksheetWithIcebreakers.Dimension.End.Row;
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    var nameString = worksheetWithIcebreakers.Cells[row, 1].Value?.ToString();
+                    var speedInKnotsString = worksheetWithIcebreakers.Cells[row, 2].Value?.ToString();
+                    var iceClassString = worksheetWithIcebreakers.Cells[row, 3].Value?.ToString()?.Replace(" ", "");
+                    var nameStartPointNameString = worksheetWithIcebreakers.Cells[row, 4].Value?.ToString() ?? string.Empty;
+                    var dateAtPointString = worksheetWithIcebreakers.Cells[row, 5].Value?.ToString() ?? string.Empty;
+
+                    var speedInKnotsResult = decimal.TryParse(speedInKnotsString, CultureInfo.CurrentCulture, out var speedInKnots);
+                    var iceClassResult = Enum.TryParse<IceClass>(iceClassString, true, out var iceClass);
+                    var startPoint = nodesMap.GetNodeByName(nameStartPointNameString);
+
+                    var datetimeConvertToDoubleResult = double.TryParse(dateAtPointString, CultureInfo.CurrentCulture, out var dateAtPointInDouble);
+                    DateTime dateAtPoint;
+                    if (datetimeConvertToDoubleResult)
+                        dateAtPoint = DateTime.FromOADate(dateAtPointInDouble);
+                    else
+                    {
+                        if(!DateTime.TryParse(dateAtPointString, CultureInfo.CurrentCulture, out dateAtPoint))
+                        {
+                            //вызываем ошибку
+                        }
+                    }
+
+                    if (!iceClassResult || !speedInKnotsResult || startPoint is null || !datetimeConvertToDoubleResult)
+                    {
+                        string t = "";
+                        //вызываем ошибку
+                    }
+
+                    var icebreakerCard = Factory.CreateIcebreakerCard(nameString, iceClass, speedInKnots, startPoint, dateAtPoint);
+
+                    icebreakerCards.Add(icebreakerCard);
+                }
+            }
+            return (requests, icebreakerCards);
         }
     }
 }

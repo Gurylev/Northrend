@@ -21,5 +21,13 @@ namespace Northrend.Alodi.Classes
 
         public static INodes CreateNodeMap()
             => new NodesMap();
+
+        public static IRequest CreateRequest(string name, IceClass iceClass, decimal speedInKnots, 
+            INode startPoint, INode endPoint, DateTime dateTime)
+            => new Request(name, iceClass, speedInKnots, startPoint, endPoint, dateTime);
+
+        public static IIcebreakerCard CreateIcebreakerCard(string name, IceClass iceClass, decimal speedInKnots,
+            INode startPoint, DateTime dateTime)
+            => new IcebreakerCard(name, speedInKnots, iceClass, startPoint, dateTime);
     }
 }

@@ -47,6 +47,7 @@ namespace Northrend
             var importDataService = Services.GetRequiredService<ImportDataService>();
             var map = importDataService.LoadIntegralVelocities(@"Data\IntegrVelocity.xlsx");
             var nodes = importDataService.LoadNodes(@"Data\ГрафДанные.xlsx");
+            var info = importDataService.LoadRequestsAndIcebreakers(@"Data\Расписание движения судов.xlsx");
         }
 
         private void InitializeApplicationServices()

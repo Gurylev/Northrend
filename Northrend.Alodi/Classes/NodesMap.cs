@@ -14,5 +14,8 @@ namespace Northrend.Alodi.Classes
 
         public void Add(INode node)
             => mCollection.Add(node);
+
+        public INode? GetNodeByName(string name)
+            => Collection.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
     }
 }
