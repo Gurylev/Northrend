@@ -8,6 +8,8 @@ namespace Northrend.Alodi.Interfaces
 {
     public interface INodes
     {
-        IEnumerable<INode> Collection { get; init; }
+        IEnumerable<INode> Collection { get; }
+
+        void Add(INode node);
     }
 }

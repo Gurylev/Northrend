@@ -8,6 +8,8 @@ namespace Northrend.Alodi.Interfaces
 {
     public interface IMap
     {
-        ICell[][] Cells { get; init; }
+        ICell[,] Cells { get; }
+
+        void AddCell(int x, int y, ICell cell);
     }
 }

@@ -8,6 +8,8 @@ namespace Northrend.Alodi.Interfaces
 {
     public interface ICell : ICoordinate
     {
-        Dictionary<string, float> IntegralVelocities { get; init; }
+        Dictionary<string, decimal> IntegralVelocities { get; }
+
+        void AddIntegralVelocity(string date, decimal integralVelocity);
     }
 }

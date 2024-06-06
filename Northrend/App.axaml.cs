@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Northrend.Alodi.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -42,6 +43,10 @@ namespace Northrend
             }
 
             base.OnFrameworkInitializationCompleted();
+
+            ImportDataService importDataService = new ImportDataService();
+            importDataService.LoadIntegralVelocities();
+            importDataService.LoadNodes();
         }
 
         private void InitializeApplicationServices()

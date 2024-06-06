@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Northrend.Alodi.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,10 @@ namespace Northrend.Alodi.Interfaces
 {
     public interface INode : ICoordinate
     {
-        IEnumerable<INode> PreviousNodes { get; init; }
-        IEnumerable<INode> NextNodes { get; init; }
+        ushort Id { get; }
+        string Name { get; }
+        Dictionary<string, IAreaInformation> NextNodes { get; }
+
+        void AddNextNode(string name, decimal distance, NodeStatus nodeStatus);
     }
 }

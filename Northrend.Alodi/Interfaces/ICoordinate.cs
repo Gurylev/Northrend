@@ -8,7 +8,7 @@ namespace Northrend.Alodi.Interfaces
 {
     public interface ICoordinate
     {
-        float Longitude { get; init; }
-        float Latitude { get; init; }
+        decimal Longitude { get; init; }
+        decimal Latitude { get; init; }
     }
 }
