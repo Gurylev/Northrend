@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Northrend.Views.CellView">
+	<!--<Rectangle
+		Height="5"
+		Width="5"
+		Canvas.Top="{Binding X}"
+		Canvas.Left="{Binding Y}"
+		Fill="{Binding CellColor}">
+		<ToolTip.Tip>
+			<StackPanel>
+				<WrapPanel>
+					<TextBlock
+					Text="Lat:"
+					FontSize="20"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+					<TextBlock
+					Text="{Binding AssociatedCell.Latitude}"
+					FontSize="20"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+				</WrapPanel>
+				<WrapPanel>
+					<TextBlock
+					Text="Lon:"
+					FontSize="20"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+					<TextBlock
+					Text="{Binding AssociatedCell.Longitude}"
+					FontSize="20"
+					TextWrapping="Wrap"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+				</WrapPanel>
+				<WrapPanel>
+					<TextBlock
+					Text="Ice:"
+					FontSize="20"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+					<TextBlock
+					Text="{Binding CurrentIntegralVelocity}"
+					FontSize="20"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+				</WrapPanel>
+			</StackPanel>
+		</ToolTip.Tip>
+	</Rectangle>-->
+	<Border
+		Height="5"
+		Width="5"
+		Canvas.Top="{Binding X}"
+		Canvas.Left="{Binding Y}"
+		Background="{Binding CellColor}"
+		BorderThickness="1"
+		BorderBrush="Black">
+		<ToolTip.Tip>
+			<StackPanel>
+				<WrapPanel>
+					<TextBlock
+					Text="Lat:"
+					FontSize="20"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+					<TextBlock
+					Text="{Binding AssociatedCell.Latitude}"
+					FontSize="20"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+				</WrapPanel>
+				<WrapPanel>
+					<TextBlock
+					Text="Lon:"
+					FontSize="20"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+					<TextBlock
+					Text="{Binding AssociatedCell.Longitude}"
+					FontSize="20"
+					TextWrapping="Wrap"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+				</WrapPanel>
+				<WrapPanel>
+					<TextBlock
+					Text="Ice:"
+					FontSize="20"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"/>
+					<TextBlock
+					Text="{Binding CurrentIntegralVelocity}"
+					FontSize="20"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+				</WrapPanel>
+			</StackPanel>
+		</ToolTip.Tip>
+	</Border>	
+</UserControl>

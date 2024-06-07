@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		xmlns:paz="using:Avalonia.Controls.PanAndZoom"
         x:Class="Northrend.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Northrend">
@@ -11,7 +12,23 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+	<paz:ZoomBorder Name="ZoomBorder" Stretch="None" ZoomSpeed="1.2"
+								Background="WhiteSmoke" ClipToBounds="True" Focusable="True"
+								VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+		<ItemsControl Width="3000" Height="3000" Background="Transparent" Grid.Row="1" ItemsSource="{Binding Cells}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<Canvas/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			<ItemsControl.Styles>
+				<Style Selector="ItemsControl > ContentPresenter">
+					<Setter Property="Canvas.Left" Value="{Binding X}"/>
+					<Setter Property="Canvas.Top" Value="{Binding Y}"/>
+				</Style>
+			</ItemsControl.Styles>
+		</ItemsControl>
+	</paz:ZoomBorder>
 
 </Window>
