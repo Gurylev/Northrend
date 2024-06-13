@@ -14,5 +14,6 @@ namespace Northrend.Alodi.Interfaces
         Dictionary<string, IAreaInformation> NextNodes { get; }
 
         void AddNextNode(string name, decimal distance, NodeStatus nodeStatus);
+        void AddCell(ICell cell);
     }
 }

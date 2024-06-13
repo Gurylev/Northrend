@@ -1,14 +1,7 @@
-﻿using Microsoft.Win32;
-using Northrend.Alodi.Classes;
+﻿using Northrend.Alodi.Classes;
 using Northrend.Alodi.Interfaces;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Northrend.Alodi.Services
 {
@@ -37,8 +30,9 @@ namespace Northrend.Alodi.Services
         /// <param name="startNodeName">Начальная точка.</param>
         /// <param name="endNodeName">Конечная точка.</param>
         /// <param name="cancellationToken">Токен отмены анализа в случае, если анализ будет длиться продолжительное время.</param>
-        /// <returns></returns>
-        public (IEnumerable<IRouteNode> Routes, bool IsSuccess) CreateAllRoutes(INodesMap? nodes, string startNodeName, string endNodeName, CancellationToken? cancellationToken = null)
+        /// <returns>Возвращает кортеж из списка маршрутов, отсортированных по дистанции, а также флаг успешности выполнения поиска маршуртов.
+        /// Возвращает true, если успешно выполнен поиск, иначе возвращает false.</returns>
+        public (IEnumerable<IRouteNode> Routes, bool IsSuccess) CreateRoutesByNodes(INodesMap? nodes, string startNodeName, string endNodeName, CancellationToken? cancellationToken = null)
         {
             if (nodes is null)
                 return ([], false);
@@ -140,6 +134,37 @@ namespace Northrend.Alodi.Services
             if (tempRoutes.IsEmpty)
                 return true;
             return AnalyzeNodesToCreateRoutes(tempRoutes);
+        }
+
+
+        public void FindCellsForRouteNodes(IMap? map, IRouteNode? route)
+        {
+            if(map is null ||  route is null) 
+                return;
+
+            var firstRoute = route.Nodes.First();
+
+
+
+            for (int i = 0; i < map.Cells.GetLength(0) - 1; i++)
+                for (int j = 0; j < map.Cells.GetLength(1) - 1; j++)
+                {
+                    decimal deltaX = (map.Cells[i, j].Longitude - map.Cells[i + 1, j].Longitude) / 2;
+                    decimal deltaY = (map.Cells[i, j].Latitude - map.Cells[i, j + 1].Latitude) / 2;
+
+                    decimal left_x = map.Cells[i, j].Longitude - deltaX;
+                    decimal left_y = map.Cells[i, j].Latitude - deltaY;
+                    decimal right_x = left_x + deltaX * 2;
+                    decimal right_y = left_y + deltaY * 2;
+
+                    RectangleM rectangle = new(map.Cells[i, j].Longitude - deltaX, map.Cells[i, j].Latitude - deltaY, deltaX * 2, deltaY * 2);
+                    
+                    foreach (var node in route.Nodes)
+                        if (rectangle.Contains((int)node.Longitude, node.Latitude))
+                            node.AddCell(map.Cells[i, j]);
+                }
+
+
         }
     }
 }

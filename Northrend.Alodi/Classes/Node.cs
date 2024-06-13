@@ -19,6 +19,9 @@ namespace Northrend.Alodi.Classes
         public decimal Longitude { get ; init; }
         public decimal Latitude { get; init; }
 
+        ICell? mCell = null;
+        public ICell? Cell => mCell;
+
        
         public Node(ushort id, string name, decimal longitude, decimal latitude)
         {
@@ -30,5 +33,8 @@ namespace Northrend.Alodi.Classes
 
         public void AddNextNode(string name, decimal distance, NodeStatus nodeStatus)
             => mNextNodes.Add(name, new AreaInformation(distance, nodeStatus));
+
+        public void AddCell(ICell cell)
+            => mCell = cell;
     }
 }

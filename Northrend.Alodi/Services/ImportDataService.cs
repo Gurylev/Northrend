@@ -106,8 +106,8 @@ namespace Northrend.Alodi.Services
                 for (int row = 2; row <= rowCount; row++)
                 {
                     var idString = worksheetWithPoints.Cells[row, 1].Value?.ToString();
-                    var longitudeString = worksheetWithPoints.Cells[row, 2].Value?.ToString();
-                    var latitudeString = worksheetWithPoints.Cells[row, 3].Value?.ToString();
+                    var latitudeString = worksheetWithPoints.Cells[row, 2].Value?.ToString();
+                    var longitudeString = worksheetWithPoints.Cells[row, 3].Value?.ToString();
                     var name = worksheetWithPoints.Cells[row, 4].Value?.ToString() ?? string.Empty;
 
 

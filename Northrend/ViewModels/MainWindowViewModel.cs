@@ -5,6 +5,7 @@ using Northrend.Alodi.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Northrend.ViewModels
@@ -25,7 +26,9 @@ namespace Northrend.ViewModels
 
             var routesCreatorService = mServiceProvider.GetRequiredService<RoutesCreatorService>();
 
-            var (routes, isSuccess) = routesCreatorService.CreateAllRoutes(nodes, "окно в европу", "остров Врангеля");
+            var (routes, isSuccess) = routesCreatorService.CreateRoutesByNodes(nodes, "окно в европу", "остров Врангеля");
+
+            routesCreatorService.FindCellsForRouteNodes(CurrentMap, routes.First());
 
             PrepareCellsViewModels();
         }
