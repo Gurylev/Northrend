@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Northrend.Alodi.Interfaces
 {
-    public interface INodes
+    public interface INodesMap
     {
         IEnumerable<INode> Collection { get; }
 

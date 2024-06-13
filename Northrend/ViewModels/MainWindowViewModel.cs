@@ -4,6 +4,7 @@ using Northrend.Alodi.Interfaces;
 using Northrend.Alodi.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Northrend.ViewModels
@@ -21,6 +22,10 @@ namespace Northrend.ViewModels
             CurrentMap = importDataService.LoadIntegralVelocities(@"Data\IntegrVelocity.xlsx");
             var nodes = importDataService.LoadNodes(@"Data\ГрафДанные.xlsx");
             var info = importDataService.LoadRequestsAndIcebreakers(@"Data\Расписание движения судов.xlsx");
+
+            var routesCreatorService = mServiceProvider.GetRequiredService<RoutesCreatorService>();
+
+            var (routes, isSuccess) = routesCreatorService.CreateAllRoutes(nodes, "окно в европу", "остров Врангеля");
 
             PrepareCellsViewModels();
         }

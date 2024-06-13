@@ -14,7 +14,7 @@ namespace Northrend.Alodi.Services
 {
     public class ImportDataService
     {
-        INodes? nodesMap;
+        INodesMap? nodesMap;
 
 
 
@@ -82,7 +82,7 @@ namespace Northrend.Alodi.Services
             return map;
         }
 
-        public INodes? LoadNodes(string path)
+        public INodesMap? LoadNodes(string path)
         {
             FileInfo existingFile = new(path);
             if (!existingFile.Exists)

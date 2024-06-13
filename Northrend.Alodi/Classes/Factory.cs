@@ -19,7 +19,7 @@ namespace Northrend.Alodi.Classes
         public static INode CreateNode(ushort id, string name, decimal latitude, decimal longitude)
             => new Node(id, name, latitude, longitude);
 
-        public static INodes CreateNodeMap()
+        public static INodesMap CreateNodeMap()
             => new NodesMap();
 
         public static IRequest CreateRequest(string name, IceClass iceClass, decimal speedInKnots, 

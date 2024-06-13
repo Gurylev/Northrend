@@ -82,7 +82,7 @@ namespace Northrend
                     .AddSingleton<MainWindow>()
                     .AddSingleton<ImportDataService>()
                     
-                    
+                    .AddSingleton<RoutesCreatorService>()
                     
                     
                     ;
