@@ -2,14 +2,15 @@
 
 namespace Northrend.Alodi.Interfaces
 {
-    public interface IRouteNode
+    public interface IRouteByNodes
     {
         decimal Distance { get; }
         List<INode> Nodes { get; }
-
+        IEnumerable<(int i, int j)> CellsPositionsOnMap { get; }
         void Add(INode node);
         bool IsExistNodeByName(string nodeName);
-        RouteNode Clone();
-        bool Equals(RouteNode? other);
+        IRouteByNodes Clone();
+        bool Equals(IRouteByNodes? other);
+       
     }
 }

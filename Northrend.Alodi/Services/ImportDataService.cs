@@ -60,7 +60,7 @@ namespace Northrend.Alodi.Services
                             //вызываем ошибку
                         }
 
-                        var cell = Factory.CreateCell(longitude, latitude);
+                        var cell = Factory.CreateCell(longitude, latitude, col - 1, row - 1);
 
                         for (int i = 2; i < package.Workbook.Worksheets.Count; i++)
                         {

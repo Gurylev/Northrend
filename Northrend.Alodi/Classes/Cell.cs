@@ -13,13 +13,18 @@ namespace Northrend.Alodi.Classes
 
         public decimal Latitude { get; init; }
 
+        public int PositionX { get; init; }
+        public int PositionY { get; init; }
+
         Dictionary<string, decimal> mIntegralVelocities = [];
         public Dictionary<string, decimal> IntegralVelocities => mIntegralVelocities;
 
-        public Cell(decimal longitude, decimal latitude) 
+        public Cell(decimal longitude, decimal latitude, int positionX, int positionY) 
         {
             Longitude = longitude;
             Latitude = latitude;
+            PositionX = positionX;
+            PositionY = positionY;
         }
 
         public void AddIntegralVelocity(string date, decimal integralVelocity)

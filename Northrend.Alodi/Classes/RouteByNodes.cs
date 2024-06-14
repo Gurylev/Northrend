@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace Northrend.Alodi.Classes
 {
-    public class RouteNode : IEquatable<RouteNode>, IRouteNode
+    public class RouteByNodes : IEquatable<IRouteByNodes>, IRouteByNodes
     {
         readonly List<INode> mNodes = [];
         public List<INode> Nodes => mNodes;
@@ -11,8 +11,11 @@ namespace Northrend.Alodi.Classes
         decimal mDistance = 0;
         public decimal Distance => mDistance;
 
-        public RouteNode() { }
-        public RouteNode(IEnumerable<INode> nodes)
+        public IEnumerable<(int i, int j)> CellsPositionsOnMap 
+            => Nodes.Select(x => (x.Cell.PositionX, x.Cell.PositionY) );
+
+        public RouteByNodes() { }
+        public RouteByNodes(IEnumerable<INode> nodes)
         {
             foreach (var node in nodes)
                 Add(node);
@@ -38,10 +41,10 @@ namespace Northrend.Alodi.Classes
         public bool IsExistNodeByName(string nodeName)
             => Nodes.Any(x => x.Name.Equals(nodeName, StringComparison.OrdinalIgnoreCase));
 
-        public RouteNode Clone()
-            => new(Nodes);
+        public IRouteByNodes Clone()
+            => new RouteByNodes(Nodes);
 
-        public bool Equals(RouteNode? other)
+        public bool Equals(IRouteByNodes? other)
         {
             if (other is null)
                 return false;

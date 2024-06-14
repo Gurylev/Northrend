@@ -10,8 +10,8 @@ namespace Northrend.Alodi.Classes
 {
     public static class Factory
     {
-        public static ICell CreateCell(decimal longitude, decimal latitude)
-            => new Cell(longitude, latitude);
+        public static ICell CreateCell(decimal longitude, decimal latitude, int positionX, int positionY)
+            => new Cell(longitude, latitude, positionX, positionY);
 
         public static IMap CreateMap(int x, int y)
             => new Map(x, y);

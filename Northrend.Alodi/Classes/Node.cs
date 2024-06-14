@@ -19,7 +19,7 @@ namespace Northrend.Alodi.Classes
         public decimal Longitude { get ; init; }
         public decimal Latitude { get; init; }
 
-        ICell? mCell = null;
+        ICell? mCell;
         public ICell? Cell => mCell;
 
        

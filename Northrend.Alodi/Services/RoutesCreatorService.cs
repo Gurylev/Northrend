@@ -7,7 +7,7 @@ namespace Northrend.Alodi.Services
 {
     public class RoutesCreatorService
     {
-        readonly ConcurrentBag<IRouteNode> mCreatedRoutes = [];
+        readonly ConcurrentBag<IRouteByNodes> mCreatedRoutes = [];
         readonly ConcurrentBag<Task> mTasks = [];
 
         static readonly byte mMaxDegreeOfParallelism = 32;
@@ -32,7 +32,7 @@ namespace Northrend.Alodi.Services
         /// <param name="cancellationToken">Токен отмены анализа в случае, если анализ будет длиться продолжительное время.</param>
         /// <returns>Возвращает кортеж из списка маршрутов, отсортированных по дистанции, а также флаг успешности выполнения поиска маршуртов.
         /// Возвращает true, если успешно выполнен поиск, иначе возвращает false.</returns>
-        public (IEnumerable<IRouteNode> Routes, bool IsSuccess) CreateRoutesByNodes(INodesMap? nodes, string startNodeName, string endNodeName, CancellationToken? cancellationToken = null)
+        public (IEnumerable<IRouteByNodes> Routes, bool IsSuccess) CreateRoutesByNodes(INodesMap? nodes, string startNodeName, string endNodeName, CancellationToken? cancellationToken = null)
         {
             if (nodes is null)
                 return ([], false);
@@ -50,14 +50,14 @@ namespace Northrend.Alodi.Services
             if (cancellationToken is null)
                 cancellationToken = new CancellationTokenSource(new TimeSpan(0, mTimeWatingToAbortAnalyzeInSeconds, 0)).Token;
 
-            ConcurrentBag<IRouteNode> routes = [];
+            ConcurrentBag<IRouteByNodes> routes = [];
             foreach (var nodeLine in mStartPoint.NextNodes)
             {
                 var node = mNodes.GetNodeByName(nodeLine.Key);
                 if (node is null)
                     return ([], false);
 
-                var route = new RouteNode();
+                var route = new RouteByNodes();
                 route.Add(mStartPoint);
                 route.Add(node);
                 routes.Add(route);
@@ -68,7 +68,7 @@ namespace Northrend.Alodi.Services
         }
 
 
-        bool AnalyzeNodesToCreateRoutes(IReadOnlyCollection<IRouteNode> routes) 
+        bool AnalyzeNodesToCreateRoutes(IReadOnlyCollection<IRouteByNodes> routes) 
         {
             if (mNodes is null)
                 return false;
@@ -76,7 +76,7 @@ namespace Northrend.Alodi.Services
             if (mStartPoint is null || mEndPoint is null)
                 return false;
 
-            ConcurrentBag<IRouteNode> tempRoutes = [];
+            ConcurrentBag<IRouteByNodes> tempRoutes = [];
 
             Task[] tasks = new Task[routes.Count];
             int taskPosition = 0;
@@ -137,7 +137,7 @@ namespace Northrend.Alodi.Services
         }
 
 
-        public (IRouteNode? UpdatedRoute, bool IsSuccess) FindCellsForRouteNodes(IMap? map, IRouteNode? route, decimal shift)
+        public (IRouteByNodes? UpdatedRoute, bool IsSuccess) FindCellsForRouteNodes(IMap? map, IRouteByNodes? route, decimal shift)
         {
             if(map is null ||  route is null) 
                 return (null, false);
@@ -153,9 +153,10 @@ namespace Northrend.Alodi.Services
                         map.Cells[i, j].Latitude - deltaY, 
                         deltaX * 2, 
                         deltaY * 2);
-                    
+
                     foreach (var node in route.Nodes)
-                        if (rectangle.Contains(node.Longitude, node.Latitude, shift))
+                        if (rectangle.Contains(node.Longitude, node.Latitude, shift)
+                            && node.Cell is null)
                             node.AddCell(map.Cells[i, j]);
                 }
 
