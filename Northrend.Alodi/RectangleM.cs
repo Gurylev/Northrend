@@ -25,15 +25,14 @@ namespace Northrend.Alodi
             this.mHeight = height;
         }
 
-        public bool Contains(decimal x, decimal y)
+        public bool Contains(decimal x, decimal y, decimal percent =0.3m)
         {
-            //if(mWidth<0 &&  mHeight<0)
-                return mX >= x && x > mX + mWidth && mY >= y && y > mY + mHeight;
-
-           // return mX <= x && x < mX + mWidth && mY <= y && y < mY + mHeight;
+            return
+            mX + mX * percent / 100 >= x && x > mX + mWidth - mX * percent / 100
+            && mY + mY * percent / 100 >= y && y > mY + mHeight - mY * percent / 100;
         }
 
-        public override string ToString() => $"{{X={mX},Y={mY},Width={mWidth},Height={mHeight}}}";
+        public override string ToString() => $"{{X = {mX}, Y = {mY}, Width = {mWidth}, Height= {mHeight} }}";
     }
 }
 

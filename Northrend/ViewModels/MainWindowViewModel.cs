@@ -28,7 +28,7 @@ namespace Northrend.ViewModels
 
             var (routes, isSuccess) = routesCreatorService.CreateRoutesByNodes(nodes, "окно в европу", "остров Врангеля");
 
-            routesCreatorService.FindCellsForRouteNodes(CurrentMap, routes.First());
+            var result = routesCreatorService.FindCellsForRouteNodes(CurrentMap, routes.First(), 0m);
 
             PrepareCellsViewModels();
         }

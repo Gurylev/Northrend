@@ -12,6 +12,7 @@ namespace Northrend.Alodi.Interfaces
         ushort Id { get; }
         string Name { get; }
         Dictionary<string, IAreaInformation> NextNodes { get; }
+        ICell? Cell { get; }
 
         void AddNextNode(string name, decimal distance, NodeStatus nodeStatus);
         void AddCell(ICell cell);

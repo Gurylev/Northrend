@@ -137,14 +137,10 @@ namespace Northrend.Alodi.Services
         }
 
 
-        public void FindCellsForRouteNodes(IMap? map, IRouteNode? route)
+        public (IRouteNode? UpdatedRoute, bool IsSuccess) FindCellsForRouteNodes(IMap? map, IRouteNode? route, decimal shift)
         {
             if(map is null ||  route is null) 
-                return;
-
-            var firstRoute = route.Nodes.First();
-
-
+                return (null, false);
 
             for (int i = 0; i < map.Cells.GetLength(0) - 1; i++)
                 for (int j = 0; j < map.Cells.GetLength(1) - 1; j++)
@@ -152,19 +148,21 @@ namespace Northrend.Alodi.Services
                     decimal deltaX = (map.Cells[i, j].Longitude - map.Cells[i + 1, j].Longitude) / 2;
                     decimal deltaY = (map.Cells[i, j].Latitude - map.Cells[i, j + 1].Latitude) / 2;
 
-                    decimal left_x = map.Cells[i, j].Longitude - deltaX;
-                    decimal left_y = map.Cells[i, j].Latitude - deltaY;
-                    decimal right_x = left_x + deltaX * 2;
-                    decimal right_y = left_y + deltaY * 2;
-
-                    RectangleM rectangle = new(map.Cells[i, j].Longitude - deltaX, map.Cells[i, j].Latitude - deltaY, deltaX * 2, deltaY * 2);
+                    RectangleM rectangle = new(
+                        map.Cells[i, j].Longitude - deltaX, 
+                        map.Cells[i, j].Latitude - deltaY, 
+                        deltaX * 2, 
+                        deltaY * 2);
                     
                     foreach (var node in route.Nodes)
-                        if (rectangle.Contains((int)node.Longitude, node.Latitude))
+                        if (rectangle.Contains(node.Longitude, node.Latitude, shift))
                             node.AddCell(map.Cells[i, j]);
                 }
 
+            if (route.Nodes.Any(x => x.Cell is null))
+                return FindCellsForRouteNodes(map, route, shift + 0.1m);
 
+            return (route, !route.Nodes.Any(x => x.Cell is null));
         }
     }
 }
