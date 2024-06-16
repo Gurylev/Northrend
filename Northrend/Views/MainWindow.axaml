@@ -12,23 +12,94 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-	<paz:ZoomBorder Name="ZoomBorder" Stretch="None" ZoomSpeed="1.2"
-								Background="WhiteSmoke" ClipToBounds="True" Focusable="True"
-								VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-		<ItemsControl Width="3000" Height="3000" Background="Transparent" Grid.Row="1" ItemsSource="{Binding Cells}">
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<Canvas/>
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
+	<paz:ZoomBorder Name="ZoomBorder" 
+					Stretch="None" 
+					ZoomSpeed="1.2"
+					Background="WhiteSmoke" 
+					ClipToBounds="True" 
+					Focusable="True"
+					VerticalAlignment="Stretch"
+					HorizontalAlignment="Stretch">
+		<Grid RowDefinitions="50, Auto">
+			<WrapPanel Grid.Row="0">
+				<ComboBox
+					ItemsSource="{Binding Dates}"
+					SelectedItem="{Binding SelectedDate}"/>
+				<TextBox
+					Text="{Binding FirstPoint}"/>
+				<TextBox
+					Text="{Binding LastPoint}"/>
+				<Button 
+					Background="Green"
+					Content="Построить"
+					Command="{Binding PrepareRouteCommand}"/>
+			</WrapPanel>
 
-			<ItemsControl.Styles>
-				<Style Selector="ItemsControl > ContentPresenter">
-					<Setter Property="Canvas.Left" Value="{Binding X}"/>
-					<Setter Property="Canvas.Top" Value="{Binding Y}"/>
-				</Style>
-			</ItemsControl.Styles>
-		</ItemsControl>
+
+			<ItemsControl 
+				ZIndex="0" 
+				Width="3000"
+				Height="3000" 
+				Background="Transparent" 
+				Grid.Row="1" 
+				ItemsSource="{Binding Cells}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Canvas/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.Styles>
+					<Style Selector="ItemsControl > ContentPresenter">
+						<Setter Property="Canvas.Left" Value="{Binding X}"/>
+						<Setter Property="Canvas.Top" Value="{Binding Y}"/>
+					</Style>
+				</ItemsControl.Styles>
+			</ItemsControl>
+
+			<ItemsControl
+				ZIndex="1"
+				Width="3000"
+				Height="3000" 
+				Background="Transparent" 
+				Grid.Row="1" 
+				ItemsSource="{Binding Ports}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Canvas/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.Styles>
+					<Style Selector="ItemsControl > ContentPresenter">
+						<Setter Property="Canvas.Left" Value="{Binding X}"/>
+						<Setter Property="Canvas.Top" Value="{Binding Y}"/>
+					</Style>
+				</ItemsControl.Styles>
+			</ItemsControl>
+
+			<ItemsControl 
+				ZIndex="2"
+				Width="3000"
+				Height="3000"
+				Background="Transparent" 
+				Grid.Row="1"
+				ItemsSource="{Binding Route}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Canvas/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.Styles>
+					<Style Selector="ItemsControl > ContentPresenter">
+						<Setter Property="Canvas.Left" Value="{Binding X}"/>
+						<Setter Property="Canvas.Top" Value="{Binding Y}"/>
+					</Style>
+				</ItemsControl.Styles>
+			</ItemsControl>
+		</Grid>
+		
 	</paz:ZoomBorder>
 
 </Window>

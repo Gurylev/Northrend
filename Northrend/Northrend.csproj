@@ -29,6 +29,7 @@
 	<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+	<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Northrend.Alodi\Northrend.Alodi.csproj" />
