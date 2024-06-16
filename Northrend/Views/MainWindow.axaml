@@ -20,20 +20,41 @@
 					Focusable="True"
 					VerticalAlignment="Stretch"
 					HorizontalAlignment="Stretch">
-		<Grid RowDefinitions="50, Auto">
-			<WrapPanel Grid.Row="0">
-				<ComboBox
-					ItemsSource="{Binding Dates}"
-					SelectedItem="{Binding SelectedDate}"/>
-				<TextBox
-					Text="{Binding FirstPoint}"/>
-				<TextBox
-					Text="{Binding LastPoint}"/>
-				<Button 
-					Background="Green"
-					Content="Построить"
-					Command="{Binding PrepareRouteCommand}"/>
-			</WrapPanel>
+		<Grid RowDefinitions="100, Auto">
+			<StackPanel Grid.Row="0">
+				<WrapPanel >
+					<Button
+						Background="Green"
+						Content="Лед.."
+						Command="{Binding LoadIceCommand}"/>
+					<Button
+						Background="Green"
+						Content="Граф.."
+						Command="{Binding LoadGraphCommand}"/>
+					<Button
+						Background="Green"
+						Content="Запросы.."
+						Command="{Binding LoadRequestsCommand}"/>
+					<Button
+						Background="Green"
+						Content="Подготовить"
+						Command="{Binding LoadDataCommand}"/>					
+				</WrapPanel>
+				<WrapPanel >					
+					<ComboBox
+						ItemsSource="{Binding Dates}"
+						SelectedItem="{Binding SelectedDate}"/>
+					<TextBox
+						Text="{Binding FirstPoint}"/>
+					<TextBox
+						Text="{Binding LastPoint}"/>
+					<Button
+						Background="Green"
+						Content="Построить"
+						Command="{Binding PrepareRouteCommand}"/>
+				</WrapPanel>
+			</StackPanel>
+			
 
 
 			<ItemsControl 

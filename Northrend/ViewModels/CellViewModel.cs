@@ -12,6 +12,7 @@ namespace Northrend.ViewModels
 	public class CellViewModel : ViewModelBase
 	{
 		private readonly IServiceProvider mServiceProvider;
+        [Reactive]
 		public ICell AssociatedCell { get; set; }
 
         [Reactive]
@@ -21,8 +22,9 @@ namespace Northrend.ViewModels
 		public IBrush CellColor { get; set; }
 
 		public string Point => $"{X/5}.{Y/5}";
+        
         public string Coordinates => $"{AssociatedCell.Latitude}.{AssociatedCell.Longitude}";
-
+        [Reactive]
         public decimal CurrentIntegralVelocity { get; set; }
 
         [Reactive]
@@ -36,8 +38,9 @@ namespace Northrend.ViewModels
 
         [Reactive]
         public string PortName { get; set; }
-
+        [Reactive]
         public int X { get;set; }
+        [Reactive]
 		public int Y { get;set; }
 
         public CellViewModel(IServiceProvider serviceProvider, ICell associatedCell, int x, int y, bool isPort = false, bool isRoutePoint = false, string portName = "")

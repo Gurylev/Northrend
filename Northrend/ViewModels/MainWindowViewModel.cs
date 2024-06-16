@@ -1,16 +1,23 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Northrend.Alodi.Classes;
 using Northrend.Alodi.Interfaces;
 using Northrend.Alodi.Services;
+using Northrend.Views;
+using OfficeOpenXml.LoadFunctions.Params;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Northrend.ViewModels
@@ -18,17 +25,20 @@ namespace Northrend.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private readonly IServiceProvider mServiceProvider;
+        [Reactive]
         public IMap? CurrentMap { get; private set; }
 
-        public List<CellViewModel> Cells { get; private set; } = [];
+        [Reactive]
+        public ObservableCollection<CellViewModel> Cells { get; private set; } = [];
 
+        [Reactive]
         public ObservableCollection<string> Dates { get; set; } = [];
 
         private int set { get; set; } = 0;
 
         [Reactive]
         public string SelectedDate { get; set; }
-
+        [Reactive]
         public INodesMap Nodes { get; set; }
 
         [Reactive]
@@ -36,16 +46,34 @@ namespace Northrend.ViewModels
         [Reactive]
         public string LastPoint { get; set; } = "остров Врангеля";
 
+        [Reactive]
+        public string PathToIceVelocities { get; set; } = @"Data\IntegrVelocity.xlsx";
+        [Reactive]
+        public string PathToGraph { get; set; } = @"Data\ГрафДанные.xlsx";
+
+        [Reactive]
+        public string PathToRequests { get; set; } = @"Data\Расписание движения судов.xlsx";
+
         public ReactiveCommand<Unit, Unit> PrepareRouteCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> LoadIceCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> LoadGraphCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> LoadRequestsCommand { get; }
+        public ReactiveCommand<Unit, Unit> LoadDataCommand { get; }
 
         public MainWindowViewModel(IServiceProvider serviceProvider)
         {
             mServiceProvider = serviceProvider;
-            var importDataService = mServiceProvider.GetRequiredService<ImportDataService>();
-            CurrentMap = importDataService.LoadIntegralVelocities(@"Data\IntegrVelocity.xlsx");
-            Nodes = importDataService.LoadNodes(@"Data\ГрафДанные.xlsx");
-            var info = importDataService.LoadRequestsAndIcebreakers(@"Data\Расписание движения судов.xlsx");
+
+            //LoadData();
+           
             PrepareRouteCommand = ReactiveCommand.Create(PrepareRoute);
+            LoadIceCommand = ReactiveCommand.CreateFromTask(SetPathToIce);
+            LoadGraphCommand = ReactiveCommand.CreateFromTask(SetPathToGraph);
+            LoadRequestsCommand = ReactiveCommand.CreateFromTask(SetPathToRequests);
+            LoadDataCommand = ReactiveCommand.CreateFromTask(LoadData);
             //var routesCreatorService = mServiceProvider.GetRequiredService<RoutesCreatorService>();
 
             //var (routes, isSuccess) = routesCreatorService.CreateRoutesByNodes(Nodes, "окно в европу", "остров Врангеля");
@@ -53,10 +81,7 @@ namespace Northrend.ViewModels
 
             //var result = routesCreatorService.FindCellsForRouteNodes(CurrentMap, routes.First(), 0m);
 
-            PrepareDates(CurrentMap.Cells[0, 0]);
 
-            PrepareCells();
-            PreparePorts(Nodes);
             //PrepareRoutes(result.UpdatedRoute);
 
             this.WhenAnyValue(x => x.SelectedDate)
@@ -65,6 +90,23 @@ namespace Northrend.ViewModels
                 {                   
                     UpdateCellsIntegralVelocity();
                 });
+        }
+
+        public async Task LoadData()
+        {
+            var importDataService = mServiceProvider.GetRequiredService<ImportDataService>();
+            CurrentMap = importDataService.LoadIntegralVelocities(PathToIceVelocities);
+            Nodes = importDataService.LoadNodes(PathToGraph);
+            var info = importDataService.LoadRequestsAndIcebreakers(PathToRequests);
+
+            PrepareDates(CurrentMap.Cells[0, 0]);
+
+            Cells.Clear();
+
+            PrepareCells();
+            PreparePorts(Nodes);
+
+            mServiceProvider.GetRequiredService<MainWindow>().InvalidateVisual();
         }
 
         public void PrepareRoute()
@@ -77,6 +119,66 @@ namespace Northrend.ViewModels
 
             PrepareRoutes(result.UpdatedRoute);
         }
+        public async Task SetPathToIce()
+        {
+            var mainWindow = mServiceProvider.GetRequiredService<MainWindow>();
+            var topLevel = TopLevel.GetTopLevel(mainWindow);
+
+            // Start async operation to open the dialog.
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {               
+                AllowMultiple = false
+            });
+            try
+            {
+                PathToIceVelocities = files.FirstOrDefault().TryGetLocalPath();
+            }
+            catch (Exception)
+            {
+
+            }           
+            
+        }
+        public async Task SetPathToGraph()
+        {
+            var mainWindow = mServiceProvider.GetRequiredService<MainWindow>();
+            var topLevel = TopLevel.GetTopLevel(mainWindow);
+
+            // Start async operation to open the dialog.
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                AllowMultiple = false
+            });
+
+            try
+            {
+                PathToGraph = files.FirstOrDefault().TryGetLocalPath();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public async Task SetPathToRequests()
+        {
+            var mainWindow = mServiceProvider.GetRequiredService<MainWindow>();
+            var topLevel = TopLevel.GetTopLevel(mainWindow);
+
+            // Start async operation to open the dialog.
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                AllowMultiple = false
+            });
+            try
+            {
+                PathToRequests = files.FirstOrDefault().TryGetLocalPath();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
 
         private void UpdateCellsIntegralVelocity()
         {
@@ -86,64 +188,79 @@ namespace Northrend.ViewModels
 
         private void PrepareDates(ICell cell)
         {
-            foreach(var date in cell.IntegralVelocities.Keys)
+            Dispatcher.UIThread.Invoke(() =>
             {
-                Dates.Add(date);
-            }
-            SelectedDate = Dates.First();
+                Dates.Clear();
+                foreach (var date in cell.IntegralVelocities.Keys)
+                {
+                    Dates.Add(date);
+                }
+                SelectedDate = Dates.First();
+            });
+            
         }
 
         private void PrepareCells()
         {
-            for (int i = 0; i < 217; i++)
+            Dispatcher.UIThread.Invoke(() =>
             {
-                for (int j = 0; j < 269; j++)
+                for (int i = 0; i < 217; i++)
                 {
-                    Cells.Add(new CellViewModel(mServiceProvider, CurrentMap.Cells[i, j], i, j));
+                    for (int j = 0; j < 269; j++)
+                    {
+                        Cells.Add(new CellViewModel(mServiceProvider, CurrentMap.Cells[i, j], i, j));
+                    }
                 }
-            }
+            });           
         }
 
         private void PreparePorts(INodesMap nodes)
         {
-            foreach (var port in nodes.Collection)
-            {
-                var cell = Cells.FirstOrDefault(x => Math.Abs(x.AssociatedCell.Latitude - port.Latitude) < (decimal)1 & Math.Abs(x.AssociatedCell.Longitude - port.Longitude) < (decimal)1);
+            Dispatcher.UIThread.Invoke(() =>
+            {                
+                foreach (var port in nodes.Collection)
+                {
+                    var cell = Cells.FirstOrDefault(x => Math.Abs(x.AssociatedCell.Latitude - port.Latitude) < (decimal)1 & Math.Abs(x.AssociatedCell.Longitude - port.Longitude) < (decimal)1);
 
-                if(cell is null)
-                    continue;
+                    if (cell is null)
+                        continue;
 
-                cell.IsPort = true;
-                cell.PortName = port.Name;
-                cell.SetColor();
+                    cell.IsPort = true;
+                    cell.PortName = port.Name;
+                    cell.SetColor();
 
-                //if (cell != null)
-                //    Ports.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, true, portName: port.Name));
-            }           
+                    //if (cell != null)
+                    //    Ports.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, true, portName: port.Name));
+                }
+            });                   
         }
 
         private void PrepareRoutes(IRouteByNodes route)
         {
-            var lastRoute = Cells.Where(x => x.IsRoutePoint).ToList();
-            for (int i = 0; i < lastRoute.Count(); i++)
+            Dispatcher.UIThread.Invoke(() =>
             {
-                lastRoute[i].IsRoutePoint = false;
-                lastRoute[i].SetColor();
-            }
+                var lastRoute = Cells.Where(x => x.IsRoutePoint).ToList();
+                for (int i = 0; i < lastRoute.Count(); i++)
+                {
+                    lastRoute[i].IsRoutePoint = false;
+                    lastRoute[i].SetColor();
+                }
 
-            foreach (var routePoint in route.CellsPositionsOnMap)
-            {
-                var cell = Cells.FirstOrDefault(x => x.X/5 == routePoint.i && x.Y/5 == routePoint.j);
+                foreach (var routePoint in route.CellsPositionsOnMap)
+                {
+                    var cell = Cells.FirstOrDefault(x => x.X / 5 == routePoint.i && x.Y / 5 == routePoint.j);
 
-                if (cell is null)
-                    continue;
+                    if (cell is null)
+                        continue;
 
-                cell.IsRoutePoint = true;
-                cell.SetColor();
+                    cell.IsRoutePoint = true;
+                    cell.SetColor();
 
-                //if (cell != null)
-                //    Route.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, isRoutePoint: true));
-            }
+                    //if (cell != null)
+                    //    Route.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, isRoutePoint: true));
+                }
+            });
+           
         }       
     }
 }

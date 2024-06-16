@@ -80,7 +80,7 @@ namespace Northrend
                     .AddSingleton<IEventAggregator, EventAggregator>()
                     .AddSingleton<MainWindowViewModel>()
                     .AddSingleton<MainWindow>()
-                    .AddSingleton<ImportDataService>()
+                    .AddTransient<ImportDataService>()
                     
                     .AddTransient<RoutesCreatorService>()
                     
