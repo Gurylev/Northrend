@@ -121,6 +121,8 @@ namespace Northrend.ViewModels
 
         private void PrepareRoutes(IRouteByNodes route)
         {
+            Route.Clear();
+
             foreach (var routePoint in route.CellsPositionsOnMap)
             {
                 var cell = Cells.FirstOrDefault(x => x.X/5 == routePoint.i && x.Y/5 == routePoint.j);
