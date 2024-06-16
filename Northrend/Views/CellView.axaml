@@ -104,53 +104,62 @@
 			</ToolTip.Tip>
 		</Border>
 
-		<Ellipse
-			Height="10"
-			Width="10"
-			IsVisible="{Binding IsPort}"
-			Fill="{Binding CellColor}">
-			<ToolTip.Tip>
-				<StackPanel>
-					<WrapPanel>
+		
+			<Ellipse
+				Margin="0"	
+				Height="10"
+				Width="10"
+				IsVisible="{Binding IsPort}"
+				Fill="{Binding CellColor}">
+				<ToolTip.Tip>
+					<StackPanel>
 						<TextBlock
-						Text="Lat:"
-						FontSize="20"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-						<TextBlock
-						Text="{Binding AssociatedCell.Latitude}"
-						FontSize="20"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"/>
-					</WrapPanel>
-					<WrapPanel>
-						<TextBlock
-						Text="Lon:"
-						FontSize="20"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-						<TextBlock
-						Text="{Binding AssociatedCell.Longitude}"
-						FontSize="20"
-						TextWrapping="Wrap"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"/>
-					</WrapPanel>
-					<WrapPanel>
-						<TextBlock
-						Text="Ice:"
-						FontSize="20"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"/>
-						<TextBlock
-						Text="{Binding CurrentIntegralVelocity}"
-						FontSize="20"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"/>
-					</WrapPanel>
-				</StackPanel>
-			</ToolTip.Tip>
-		</Ellipse>
+							Text="{Binding PortName}"
+							FontSize="20"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"/>
+						<WrapPanel>
+							<TextBlock
+							Text="Lat:"
+							FontSize="20"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"/>
+							<TextBlock
+							Text="{Binding AssociatedCell.Latitude}"
+							FontSize="20"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"/>
+						</WrapPanel>
+						<WrapPanel>
+							<TextBlock
+							Text="Lon:"
+							FontSize="20"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"/>
+							<TextBlock
+							Text="{Binding AssociatedCell.Longitude}"
+							FontSize="20"
+							TextWrapping="Wrap"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"/>
+						</WrapPanel>
+						<WrapPanel>
+							<TextBlock
+							Text="Ice:"
+							FontSize="20"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"/>
+							<TextBlock
+							Text="{Binding CurrentIntegralVelocity}"
+							FontSize="20"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"/>
+						</WrapPanel>
+					</StackPanel>
+				</ToolTip.Tip>
+			</Ellipse>
+		
+		
 	</Panel>
 	
 </UserControl>

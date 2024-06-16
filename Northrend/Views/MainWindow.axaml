@@ -51,13 +51,14 @@
 
 				<ItemsControl.Styles>
 					<Style Selector="ItemsControl > ContentPresenter">
+						<Setter Property="ZIndex" Value="{Binding zIndex}"/>
 						<Setter Property="Canvas.Left" Value="{Binding X}"/>
 						<Setter Property="Canvas.Top" Value="{Binding Y}"/>
 					</Style>
 				</ItemsControl.Styles>
 			</ItemsControl>
 
-			<ItemsControl
+			<!--<ItemsControl
 				ZIndex="1"
 				Width="3000"
 				Height="3000" 
@@ -76,9 +77,9 @@
 						<Setter Property="Canvas.Top" Value="{Binding Y}"/>
 					</Style>
 				</ItemsControl.Styles>
-			</ItemsControl>
+			</ItemsControl>-->
 
-			<ItemsControl 
+			<!--<ItemsControl 
 				ZIndex="2"
 				Width="3000"
 				Height="3000"
@@ -97,7 +98,7 @@
 						<Setter Property="Canvas.Top" Value="{Binding Y}"/>
 					</Style>
 				</ItemsControl.Styles>
-			</ItemsControl>
+			</ItemsControl>-->
 		</Grid>
 		
 	</paz:ZoomBorder>

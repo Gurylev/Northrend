@@ -31,15 +31,23 @@ namespace Northrend.ViewModels
         [Reactive]
         public bool IsRoutePoint { get; set; }
 
+        [Reactive]
+        public int zIndex { get; set; } = -1;
+
+        [Reactive]
+        public string PortName { get; set; }
+
         public int X { get;set; }
 		public int Y { get;set; }
 
-        public CellViewModel(IServiceProvider serviceProvider, ICell associatedCell, int x, int y, bool isPort = false, bool isRoutePoint = false)
+        public CellViewModel(IServiceProvider serviceProvider, ICell associatedCell, int x, int y, bool isPort = false, bool isRoutePoint = false, string portName = "")
 		{
 			mServiceProvider = serviceProvider;
 			AssociatedCell = associatedCell;
             IsPort = isPort;
             IsRoutePoint = isRoutePoint;
+
+            PortName = portName;
 
             SelectedDate = AssociatedCell.IntegralVelocities.First().Key;
             CurrentIntegralVelocity = AssociatedCell.IntegralVelocities.First().Value;
@@ -65,6 +73,7 @@ namespace Northrend.ViewModels
                 if (IsPort)
                 {
                     CellColor = new SolidColorBrush(Colors.Yellow);
+                    zIndex = 2;
                     return;
                 }
 

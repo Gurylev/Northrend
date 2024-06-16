@@ -22,10 +22,6 @@ namespace Northrend.ViewModels
 
         public List<CellViewModel> Cells { get; private set; } = [];
 
-        public List<CellViewModel> Ports { get; private set; } = [];
-
-        public ObservableCollection<CellViewModel> Route { get; private set; } = [];
-
         public ObservableCollection<string> Dates { get; set; } = [];
 
         private int set { get; set; } = 0;
@@ -113,22 +109,40 @@ namespace Northrend.ViewModels
             foreach (var port in nodes.Collection)
             {
                 var cell = Cells.FirstOrDefault(x => Math.Abs(x.AssociatedCell.Latitude - port.Latitude) < (decimal)1 & Math.Abs(x.AssociatedCell.Longitude - port.Longitude) < (decimal)1);
-               
-                if (cell != null)
-                    Ports.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, true));
+
+                if(cell is null)
+                    continue;
+
+                cell.IsPort = true;
+                cell.PortName = port.Name;
+                cell.SetColor();
+
+                //if (cell != null)
+                //    Ports.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, true, portName: port.Name));
             }           
         }
 
         private void PrepareRoutes(IRouteByNodes route)
         {
-            Route.Clear();
+            var lastRoute = Cells.Where(x => x.IsRoutePoint).ToList();
+            for (int i = 0; i < lastRoute.Count(); i++)
+            {
+                lastRoute[i].IsRoutePoint = false;
+                lastRoute[i].SetColor();
+            }
 
             foreach (var routePoint in route.CellsPositionsOnMap)
             {
                 var cell = Cells.FirstOrDefault(x => x.X/5 == routePoint.i && x.Y/5 == routePoint.j);
 
-                if (cell != null)
-                    Route.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, isRoutePoint: true));
+                if (cell is null)
+                    continue;
+
+                cell.IsRoutePoint = true;
+                cell.SetColor();
+
+                //if (cell != null)
+                //    Route.Add(new CellViewModel(mServiceProvider, cell.AssociatedCell, cell.AssociatedCell.PositionX, cell.AssociatedCell.PositionY, isRoutePoint: true));
             }
         }       
     }
