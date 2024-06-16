@@ -44,10 +44,12 @@
 					<ComboBox
 						ItemsSource="{Binding Dates}"
 						SelectedItem="{Binding SelectedDate}"/>
-					<TextBox
-						Text="{Binding FirstPoint}"/>
-					<TextBox
-						Text="{Binding LastPoint}"/>
+					<ComboBox
+						ItemsSource="{Binding AllPoints}"
+						SelectedItem="{Binding SelectedFirstPoint}"/>
+					<ComboBox
+						ItemsSource="{Binding AllPoints}"
+						SelectedItem="{Binding SelectedLastPoint}"/>
 					<Button
 						Background="Green"
 						Content="Построить"

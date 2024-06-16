@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using DynamicData;
 using Microsoft.Extensions.DependencyInjection;
 using Northrend.Alodi.Classes;
 using Northrend.Alodi.Interfaces;
@@ -38,13 +39,18 @@ namespace Northrend.ViewModels
 
         [Reactive]
         public string SelectedDate { get; set; }
-        [Reactive]
-        public INodesMap Nodes { get; set; }
 
         [Reactive]
-        public string FirstPoint { get; set; } = "окно в европу";
+        public ObservableCollection<string> AllPoints { get; set; } = [];
+
         [Reactive]
-        public string LastPoint { get; set; } = "остров Врангеля";
+        public string SelectedFirstPoint { get; set; } = "окно в европу";
+
+        [Reactive]
+        public string SelectedLastPoint { get; set; } = "остров Врангеля";
+
+        [Reactive]
+        public INodesMap Nodes { get; set; }       
 
         [Reactive]
         public string PathToIceVelocities { get; set; } = @"Data\IntegrVelocity.xlsx";
@@ -100,6 +106,7 @@ namespace Northrend.ViewModels
             var info = importDataService.LoadRequestsAndIcebreakers(PathToRequests);
 
             PrepareDates(CurrentMap.Cells[0, 0]);
+            PreparePoints(Nodes);
 
             Cells.Clear();
 
@@ -113,7 +120,7 @@ namespace Northrend.ViewModels
         {
             var routesCreatorService = mServiceProvider.GetRequiredService<RoutesCreatorService>();
 
-            var (routes, isSuccess) = routesCreatorService.CreateRoutesByNodes(Nodes, FirstPoint, LastPoint);
+            var (routes, isSuccess) = routesCreatorService.CreateRoutesByNodes(Nodes, SelectedFirstPoint, SelectedLastPoint);
 
             var result = routesCreatorService.FindCellsForRouteNodes(CurrentMap, routes.First(), 0m);
 
@@ -198,6 +205,16 @@ namespace Northrend.ViewModels
                 SelectedDate = Dates.First();
             });
             
+        }
+
+        private void PreparePoints(INodesMap nodes)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                AllPoints.Clear();
+                AllPoints.AddRange(nodes.Collection.Select(x => x.Name));                
+            });
+
         }
 
         private void PrepareCells()
