@@ -212,7 +212,10 @@ namespace Northrend.ViewModels
             Dispatcher.UIThread.Invoke(() =>
             {
                 AllPoints.Clear();
-                AllPoints.AddRange(nodes.Collection.Select(x => x.Name));                
+                AllPoints.AddRange(nodes.Collection.Select(x => x.Name));
+
+                SelectedFirstPoint = "окно в европу";
+                SelectedLastPoint = "остров Врангеля";
             });
 
         }
@@ -237,7 +240,7 @@ namespace Northrend.ViewModels
             {                
                 foreach (var port in nodes.Collection)
                 {
-                    var cell = Cells.FirstOrDefault(x => Math.Abs(x.AssociatedCell.Latitude - port.Latitude) < (decimal)1 & Math.Abs(x.AssociatedCell.Longitude - port.Longitude) < (decimal)1);
+                    var cell = Cells.FirstOrDefault(x => Math.Abs(x.AssociatedCell.Latitude - port.Latitude) < (decimal)0.5 & Math.Abs(x.AssociatedCell.Longitude - port.Longitude) < (decimal)0.5);
 
                     if (cell is null)
                         continue;

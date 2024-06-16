@@ -83,6 +83,7 @@ namespace Northrend.ViewModels
                 if (IsRoutePoint)
                 {
                     CellColor = new SolidColorBrush(Colors.Red);
+                    zIndex = 5;
                     return;
                 }
 
